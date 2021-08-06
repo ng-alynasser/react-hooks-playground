@@ -1,3 +1,7 @@
 export default function UserPicker() {
-  return null;
+  return (
+    <select>
+      <option>Users</option>
+    </select>
+  );
 }

@@ -1,11 +1,9 @@
-import { bookables } from "../../data/bookables";
+import BookablesList from "./BookablesList";
 
 export default function BookablesPage() {
-  const CURRENT_GROUP = "Rooms";
-  const bookableRooms = bookables.filter(
-    (bookable) => bookable.group === CURRENT_GROUP
+  return (
+    <main className="bookables-page">
+      <BookablesList />
+    </main>
   );
-  const bookableIndex = 1;
-
-  return <ul className="bookables"></ul>;
 }

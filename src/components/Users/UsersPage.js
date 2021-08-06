@@ -1,3 +1,9 @@
+import UsersList from "./UsersList";
+
 export default function UsersPage() {
-  return <div>Users Page</div>;
+  return (
+    <main className="users-page">
+      <UsersList />
+    </main>
+  );
 }

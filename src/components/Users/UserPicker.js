@@ -1,22 +1,22 @@
-import { users } from "../../data/users";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import getData from "../../utils/api";
+import Spinner from "../UI/Spinner";
 
 export default function UserPicker() {
-  const currentUsers = users;
-  const [userIndex, setUserIndex] = useState(2);
+  const [users, setUsers] = useState(null);
 
-  function handleSelect(event) {
-    const selectedIndex = parseInt(event.target.value);
-    const selectedUser = users.findIndex((user) => user.id === selectedIndex);
-    setUserIndex(selectedUser);
+  useEffect(() => {
+    getData("http://localhost:3001/users").then((users) => setUsers(users));
+  }, []);
+
+  if (users === null) {
+    return <Spinner />;
   }
 
   return (
-    <select onChange={handleSelect} value={userIndex}>
-      {currentUsers.map((user, index) => (
-        <option key={user.id} value={user.id}>
-          {user.name}
-        </option>
+    <select>
+      {users.map((user) => (
+        <option key={user.id}>{user.name}</option>
       ))}
     </select>
   );

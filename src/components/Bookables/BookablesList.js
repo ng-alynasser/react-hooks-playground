@@ -1,19 +1,38 @@
-import { bookables } from "../../data/bookables";
 import { days } from "../../data/days";
-import { Fragment, useReducer, useState } from "react";
-import { FaArrowRight } from "react-icons/all";
+import { Fragment, useEffect, useReducer, useRef, useState } from "react";
+import { FaArrowRight, FaSpinner } from "react-icons/all";
 import reducer from "./reducer";
+import getData from "../../utils/api";
+import PageSpinner from "../UI/PageSpinner";
 
 const initialState = {
   group: "Rooms",
   bookableIndex: 0,
   hasDetails: true,
-  bookables,
+  bookables: [],
+  isLoading: true,
+  error: false,
+  isPresenting: false,
 };
 
 export default function BookablesList() {
-  const [state, dispatch] = useReducer(reducer, initialState);
-  const { group, bookableIndex, hasDetails, bookables } = state;
+  const [state, dispatch] = useReducer(
+    reducer,
+    initialState,
+    () => initialState
+  );
+
+  const timerRef = useRef(null);
+
+  const {
+    group,
+    bookableIndex,
+    hasDetails,
+    bookables,
+    isLoading,
+    error,
+    isPresenting,
+  } = state;
 
   const bookablesInGroup = bookables.filter(
     (bookable) => bookable.group === group
@@ -21,26 +40,73 @@ export default function BookablesList() {
   const groups = [...new Set(bookables.map((bookable) => bookable.group))];
   const bookable = bookablesInGroup[bookableIndex];
 
-  function nextBookable() {
-    dispatch({ type: "NEXT_BOOKABLE" });
-  }
+  useEffect(() => {
+    dispatch({ type: "FETCH_BOOKABLES_REQUEST" });
 
-  function changeGroup(event) {
+    getData("http://localhost:3001/bookables")
+      .then((bookables) =>
+        dispatch({ type: "FETCH_BOOKABLES_SUCCESS", payload: bookables })
+      )
+      .catch((error) =>
+        dispatch({ type: "FETCH_BOOKABLES_ERROR", payload: error })
+      );
+  }, []);
+
+  useEffect(() => {
+    if (isPresenting) {
+      scheduleNext();
+    } else {
+      clearNextTimeout();
+    }
+  });
+
+  const nextBookable = () => {
+    dispatch({ type: "NEXT_BOOKABLE", payload: false });
+  };
+
+  const changeGroup = (event) => {
     dispatch({
       type: "SET_GROUP",
       payload: event.target.value,
     });
-  }
 
-  function changeBookable(selectedIndex) {
+    if (isPresenting) {
+      clearNextTimeout();
+      scheduleNext();
+    }
+  };
+
+  const changeBookable = (selectedIndex) => {
     dispatch({
       type: "SET_BOOKABLE",
       payload: selectedIndex,
     });
+  };
+
+  const toggleHasDetails = () => {
+    dispatch({ type: "TOGGLE_HAS_DETAILS" });
+  };
+
+  const scheduleNext = () => {
+    if (timerRef.current === null) {
+      timerRef.current = setTimeout(() => {
+        timerRef.current = null;
+        dispatch({ type: "NEXT_BOOKABLE", payload: true });
+      }, 3000);
+    }
+  };
+
+  const clearNextTimeout = () => {
+    clearTimeout(timerRef.current);
+    timerRef.current = null;
+  };
+
+  if (error) {
+    return <p>{error.message}</p>;
   }
 
-  function toggleHasDetails() {
-    dispatch({ type: "TOGGLE_HAS_DETAILS" });
+  if (isLoading) {
+    return <PageSpinner />;
   }
 
   return (

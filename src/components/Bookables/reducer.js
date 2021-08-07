@@ -11,6 +11,7 @@ export default function reducer(state, action) {
       return {
         ...state,
         bookableIndex: action.payload,
+        isPresenting: false,
       };
 
     case "TOGGLE_HAS_DETAILS":
@@ -27,6 +28,30 @@ export default function reducer(state, action) {
       return {
         ...state,
         bookableIndex: ++state.bookableIndex % count,
+        isPresenting: action.payload,
+      };
+
+    case "FETCH_BOOKABLES_REQUEST":
+      return {
+        ...state,
+        isLoading: true,
+        error: false,
+        bookables: [],
+      };
+
+    case "FETCH_BOOKABLES_SUCCESS":
+      return {
+        ...state,
+        isLoading: false,
+        bookables: action.payload,
+        isPresenting: true,
+      };
+
+    case "FETCH_BOOKABLES_ERROR":
+      return {
+        ...state,
+        isLoading: false,
+        error: action.payload,
       };
 
     default:

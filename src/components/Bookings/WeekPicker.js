@@ -1,4 +1,4 @@
-import { useReducer, useRef, useState } from "react";
+import { useReducer, useState } from "react";
 import reducer from "./weekReducer";
 import { getWeek } from "../../utils/date-wrangler";
 import {

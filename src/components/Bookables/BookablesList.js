@@ -1,6 +1,6 @@
 import { days } from "../../data/days";
-import { Fragment, useEffect, useReducer, useRef, useState } from "react";
-import { FaArrowRight, FaSpinner } from "react-icons/all";
+import { Fragment, useEffect, useReducer, useRef } from "react";
+import { FaArrowRight } from "react-icons/all";
 import reducer from "./reducer";
 import getData from "../../utils/api";
 import PageSpinner from "../UI/PageSpinner";

@@ -9,7 +9,7 @@ export default function UsersList() {
     <ul className="users items-list-nav">
       {currentUsers.map((user, index) => (
         <li key={user.id} className={index === userIndex ? "selected" : null}>
-          <button className="btn" onClick={setUserIndex.bind(this, index)}>
+          <button className="btn" onClick={() => setUserIndex(index)}>
             {user.name}
           </button>
         </li>

@@ -23,6 +23,7 @@ export default function BookablesList() {
   );
 
   const timerRef = useRef(null);
+  const nextButtonRef = useRef();
 
   const {
     group,
@@ -81,6 +82,8 @@ export default function BookablesList() {
       type: "SET_BOOKABLE",
       payload: selectedIndex,
     });
+
+    nextButtonRef.current.focus();
   };
 
   const toggleHasDetails = () => {
@@ -132,7 +135,12 @@ export default function BookablesList() {
           ))}
         </ul>
         <p>
-          <button className="btn" onClick={nextBookable} autoFocus>
+          <button
+            className="btn"
+            onClick={nextBookable}
+            ref={nextButtonRef}
+            autoFocus
+          >
             <FaArrowRight />
             <span>Next</span>
           </button>

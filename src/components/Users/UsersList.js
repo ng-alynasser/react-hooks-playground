@@ -50,6 +50,11 @@ export default function UsersList() {
     timerRef.current = null;
   };
 
+  const changeUser = (user) => {
+    setUser(user);
+    setIsPresenting(false);
+  };
+
   if (error) {
     return <p>{error.message}</p>;
   }
@@ -66,7 +71,7 @@ export default function UsersList() {
     <ul className="users items-list-nav">
       {users.map((u) => (
         <li key={u.id} className={u.id === user.id ? "selected" : null}>
-          <button className="btn" onClick={() => setUser(u)}>
+          <button className="btn" onClick={() => changeUser(u)}>
             {u.name}
           </button>
         </li>

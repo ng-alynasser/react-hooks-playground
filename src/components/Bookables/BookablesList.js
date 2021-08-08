@@ -7,7 +7,6 @@ export default function BookablesList({ bookable, setBookable }) {
   const [bookables, setBookables] = useState([]);
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [isPresenting, setIsPresenting] = useState(false);
 
   const group = bookable?.group;
   const bookablesInGroup = bookables.filter(
@@ -15,15 +14,12 @@ export default function BookablesList({ bookable, setBookable }) {
   );
   const groups = [...new Set(bookables.map((bookable) => bookable.group))];
 
-  const nextButtonRef = useRef();
-
   useEffect(() => {
     getData("http://localhost:3001/bookables")
       .then((bookables) => {
         setBookable(bookables[0]);
         setBookables(bookables);
         setIsLoading(false);
-        setIsPresenting(true);
       })
       .catch((error) => {
         setError(error);
@@ -31,18 +27,7 @@ export default function BookablesList({ bookable, setBookable }) {
       });
   }, [setBookable]);
 
-  useEffect(() => {
-    if (isPresenting) {
-      const id = setTimeout(nextBookable, 3000);
-      return () => clearTimeout(id);
-    }
-  });
-
   const nextBookable = (stopPresenting = false) => {
-    if (stopPresenting) {
-      setIsPresenting(false);
-    }
-
     const i = bookablesInGroup.indexOf(bookable);
     const nextIndex = (i + 1) % bookablesInGroup.length;
     const nextBookable = bookablesInGroup[nextIndex];
@@ -58,8 +43,6 @@ export default function BookablesList({ bookable, setBookable }) {
 
   const changeBookable = (selectedBookable) => {
     setBookable(selectedBookable);
-    setIsPresenting(false);
-    nextButtonRef.current.focus();
   };
 
   if (error) {
@@ -90,9 +73,8 @@ export default function BookablesList({ bookable, setBookable }) {
       </ul>
       <p>
         <button
-          className="btn"
+          className="btn next"
           onClick={() => nextBookable(true)}
-          ref={nextButtonRef}
           autoFocus
         >
           <FaArrowRight />
